@@ -1,0 +1,31 @@
+from tkinter import *
+import tkinter as tk
+import random 
+import simpy
+import matplotlib as plt 
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+class Home:
+    def__init__(self,env ):
+    self.env=env
+    self.gateopens=env.gate()
+    self.opendoor=env.process(self.decoy())
+
+    def decoy(self):
+        for i in range(2):
+            self.guest_proc = env.process(self.guest())
+            self.parents_procs = [env.process(self.parents())]
+            yield self.env.timeout(15)
+
+     def guest(self):
+         ot.insert(END, 'Guest arrives at %s\n' % time.ctime())
+         yield self.env.timeout(5)
+         self.gateopens.succeed()
+         self.gateopens = self.env.event()
+
+     def parents(self):
+         t1, t2 = self.env.timeout(random.randint(1, 5), value="mom"), self.env.timeout(random.randint(1, 5), value="dad")
+         ret = (yield t1 | t2).values()
+         ot.insert(END, ''.join(ret)) # join the strings into a single string
+         ot.insert(END, 'Open gate at %s\n' % time.ctime())
+         
